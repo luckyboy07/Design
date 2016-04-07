@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en" class="project-dash">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Apps</title>
+    <link href="bower_components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/styles.css" rel="stylesheet">
+    <link rel="stylesheet" href="css2/style1.css" type="text/css" media="screen" />
+    <link rel="stylesheet" href="css/styles.css" type="text/css" media="screen" />
+    <script src="js/angular.js"></script>
+    <script src="js/d3.js"></script>
+    <script src="js/nv.d3.js"></script>
+    <script src="js/moment.js"></script>
+    <script src="bower_components/angular/angularjs-nvd3-directives.js"></script>
+    <link rel="stylesheet" href="js/stylesheets/nv.d3.css" />
+    <!--  <link href="bootstrap/3.3.4/bootstrap.min.css" rel="stylesheet">
+ -->
+    <!-- 
+    <link href="css/nav.css" rel="stylesheet"> -->
+</head>
+<script>
+var app = angular.module("nvd3TestApp", ['nvd3ChartDirectives']);
+
+function ExampleCtrl($scope) {
+    $scope.exampleData = [{
+        "key": "Response time",
+        "values": [
+            [52.0, 40],
+            [50.0, 60],
+            [170.0, 51],
+            [141.0, 80],
+            [80.0, 55],
+            [90.0, 40],
+            [101.0, 65],
+            [85.0, 35],
+            [111.0, 46],
+            [71.0, 56],
+            [60.0, 77],
+            [44.0, 42]
+        ]
+    }];
+
+    $scope.xAxisTickValuesFunction = function() {
+        return function(d) {
+            var tickVals = [];
+            var values = d[0].values;
+            var interestedTimeValuesArray = [0, 10, 15, 30, 45];
+            for (var i in values) {
+                if (interestedTimeValuesArray.indexOf(moment.unix(values[i][0]).minute()) >= 0) {
+                    tickVals.push(values[i][0]);
+                }
+            }
+            console.log('xAxisTickValuesFunction', d);
+            return tickVals;
+        };
+    };
+
+    $scope.xAxisTickFormatFunction = function() {
+        return function(d) {
+            return d3.time.format('%H:%M')(moment.unix(d).toDate());
+        }
+    };
+
+}
+
+function PieCtrl($scope) {
+    $scope.exampleData = [{
+        key: "One",
+        y: 5
+    }, {
+        key: "Two",
+        y: 2
+    }, {
+        key: "Three",
+        y: 9
+    }, {
+        key: "Four",
+        y: 7
+    }, {
+        key: "Five",
+        y: 4
+    }, {
+        key: "Six",
+        y: 3
+    }, {
+        key: "Seven",
+        y: 9
+    }];
+
+    $scope.xFunction = function() {
+        return function(d) {
+            return d.key;
+        };
+    }
+    $scope.yFunction = function() {
+        return function(d) {
+            return d.y;
+        };
+    }
+
+}
+
+</script>
+
+<body id="project-dash" ng-app='nvd3TestApp'>
+    <div class="sidebar sidebar-dash flex-column">
+        <nav class="navbar navbar-default top-navbar" role="navigation">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="index.html">asdasd</a>
+            </div>
+        </nav>
+        <ul class="nav nav-sidebar nav-sidebar-dash">
+            <li>
+                <a id="push-main-nav" class="nav-sidebar-btn">
+                    <div class="icon-box icon-app-push"></div>
+                    <p>asdasd</p>
+                </a>
+            </li>
+            <li>
+                <a class="nav-sidebar-btn" href="">
+                    <div class="icon-box icon-app-analytics"></div>
+                    <p>asdasd</p>
+                </a>
+            </li>
+            <li>
+                <a class="nav-sidebar-btn" href="">
+                    <div class="icon-box icon-app-deploy"></div>
+                    <p>Deploy</p>
+                </a>
+            </li>
+            <li>
+                <a class="nav-sidebar-btn" href="">
+                    <div class="icon-box icon-app-package"></div>
+                    <p>Package</p>
+                </a>
+            </li>
+            <li>
+                <a class="nav-sidebar-btn" href=>
+                    <div class="icon-box icon-app-users"></div>
+                    <p>asdasd</p>
+                </a>
+            </li>
+            <li class="divider"></li>
+            <li ui-sref-active="active">
+                <a class="nav-sidebar-btn" ui-sref="config">
+                    <div class="icon-box icon-app-config"></div>
+                    <p>asdasd</p>
+                </a>
+            </li>
+        </ul>
+    </div>
+    <div id="dash-content" class="flex-column">
+        <header id="header">
+            <div id="breadcrumbs">
+                <span ng-repeat="path in _paths">
+            <span ng-if="!$first">Info</span>
+            </div>
+            <ul class="nav navbar-nav navbar-right">
+                <li> <a class="link-dash" ng-href="">Docs</a> </li>
+                <li> <a class="link-dash" href="">Support</a> </li>
+                <li>
+                    <user-menu>
+                        <li>
+                            <a class="link-dash" href="">LuckyBoy Pay-Ram</a>
+                        </li>
+                    </user-menu>
+                </li>
+            </ul>
+            <subtabs></subtabs>
+        </header>
+        <div id="content-view" ng-app='nvd3TestApp'>
+            <div class="row">
+                <h1 style=" text-align: center " class="page-header">Welcome!</h1>
+            </div>
+            <div class="container">
+                <div class="jumbotron" ng-controller="ExampleCtrl">
+                    <div>
+                        <nvd3-line-chart data="exampleData" id="arrayExample" width="800" height="400" showXAxis="true" showYAxis="true" tooltips="true" interactive="true" xAxisTickValues="[50, 100, 70]" xAxisTickFormat="xAxisTickFormatFunction()" margin="{left:50,top:50,bottom:50,right:50}">
+                            <svg></svg>
+                        </nvd3-line-chart>
+                    </div>
+                </div>
+                <h2 class="page-header">Pie Chart</h2>
+                <div class="row">
+                    <div class="col-lg-4">
+                        <div class="panel-body" ng-controller="PieCtrl">
+                            <nvd3-pie-chart data="exampleData" id="exampleId" showLabels="true" x="xFunction()" y="yFunction()" donut="true" donutRatio=".5" donutLabelsOutside="true">
+                                <svg height="300"></svg>
+                            </nvd3-pie-chart>
+                        </div>
+                        <div class="col-lg-4">
+                            <div id="test">
+                                <svg height="400"></svg>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- <script src="bootstrap2/bootstrap.min.js"></script> -->
+</body>
+
+</html>
